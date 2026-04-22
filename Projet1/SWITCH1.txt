@@ -1,0 +1,28 @@
+==============================
+SWITCH1
+==============================
+enable
+configure terminal
+hostname SW1
+no ip domain-lookup
+------------------------------
+vlan 10
+ name VOICE
+exit
+------------------------------
+interface fa0/1
+ description Lien vers R1
+ switchport mode trunk
+exit
+------------------------------
+interface range fa0/2 - 5
+ switchport mode access
+ switchport access vlan 1
+exit
+------------------------------
+interface range fa0/10 - 11
+ switchport mode access
+ switchport access vlan 1
+ switchport voice vlan 10
+ mls qos trust cos
+exit

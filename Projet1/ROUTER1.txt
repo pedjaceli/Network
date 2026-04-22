@@ -22,7 +22,7 @@ interface fa0/0.10
  encapsulation dot1Q 10
  ip address 192.168.10.1 255.255.255.0
 exit
----------------------------------------
+--------------------------------------------------
 ip dhcp excluded-address 192.168.1.1 192.168.1.9
 ip dhcp excluded-address 192.168.1.50
 ip dhcp excluded-address 192.168.10.1 192.168.10.9
@@ -62,38 +62,4 @@ ephone 1
  type 7960
  button 1:1
 exit
-
-==============================
-SWITCH1
-==============================
-enable
-configure terminal
-hostname SW1
-no ip domain-lookup
-------------------------------
-vlan 10
- name VOICE
-exit
-------------------------------
-interface fa0/1
- description Lien vers R1
- switchport mode trunk
-exit
-------------------------------
-interface range fa0/2 - 5
- switchport mode access
- switchport access vlan 1
-exit
-------------------------------
-interface range fa0/10 - 11
- switchport mode access
- switchport access vlan 1
- switchport voice vlan 10
- mls qos trust cos
-exit
-------------------------------
-IMPRIMANTE
-------------------------------
-•	IP : 192.168.1.50
-•	Masque : 255.255.255.0
-•	Passerelle : 192.168.1.1
+----------------------------------------------------
