@@ -1,0 +1,99 @@
+==========================
+ROUTER1
+==========================
+enable
+configure terminal
+hostname R1
+no ip domain-lookup
+service password-encryption
+---------------------------
+interface fa0/0
+ no shutdown
+exit
+
+interface fa0/0.1
+ description LAN Donnees
+ encapsulation dot1Q 1 native
+ ip address 192.168.1.1 255.255.255.0
+exit
+
+interface fa0/0.10
+ description LAN Voix
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+exit
+---------------------------------------
+ip dhcp excluded-address 192.168.1.1 192.168.1.9
+ip dhcp excluded-address 192.168.1.50
+ip dhcp excluded-address 192.168.10.1 192.168.10.9
+--------------------------------------------------
+ip dhcp pool DATA
+ network 192.168.1.0 255.255.255.0
+ default-router 192.168.1.1
+ dns-server 8.8.8.8
+exit
+ 
+ip dhcp pool VOICE
+ network 192.168.10.0 255.255.255.0
+ default-router 192.168.10.1
+ option 150 ip 192.168.10.1
+exit
+--------------------------------------------------
+telephony-service
+ max-ephones 5
+ max-dn 10
+ ip source-address 192.168.10.1 port 2000
+ auto assign 1 to 10
+ create cnf-files
+exit
+--------------------------------------------------
+ephone-dn 1
+ number 1001
+ description Salon
+exit
+ 
+ephone-dn 2
+ number 1002
+ description Bureau
+exit
+---------------------------------------------------
+ephone 1
+ mac-address 0001.0203.0405
+ type 7960
+ button 1:1
+exit
+
+==============================
+SWITCH1
+==============================
+enable
+configure terminal
+hostname SW1
+no ip domain-lookup
+------------------------------
+vlan 10
+ name VOICE
+exit
+------------------------------
+interface fa0/1
+ description Lien vers R1
+ switchport mode trunk
+exit
+------------------------------
+interface range fa0/2 - 5
+ switchport mode access
+ switchport access vlan 1
+exit
+------------------------------
+interface range fa0/10 - 11
+ switchport mode access
+ switchport access vlan 1
+ switchport voice vlan 10
+ mls qos trust cos
+exit
+------------------------------
+IMPRIMANTE
+------------------------------
+•	IP : 192.168.1.50
+•	Masque : 255.255.255.0
+•	Passerelle : 192.168.1.1
