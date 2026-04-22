@@ -1,28 +1,63 @@
-==============================
-SWITCH1
-==============================
+==========================================
+SWITCH1 (Cisco 2960-24TT)
+==========================================
+Colle les blocs dans l'ordre, dans l'onglet CLI de SW1.
+
+==========================================
+1. PARAMETRES DE BASE
+==========================================
 enable
 configure terminal
 hostname SW1
 no ip domain-lookup
-------------------------------
+
+==========================================
+2. CREATION DU VLAN VOIX
+==========================================
 vlan 10
  name VOICE
 exit
-------------------------------
+
+==========================================
+3. PORT TRUNK VERS R1
+==========================================
 interface fa0/1
  description Lien vers R1
  switchport mode trunk
 exit
-------------------------------
-interface range fa0/2 - 5
+
+==========================================
+4. PORTS D'ACCES (PC, imprimante, serveur)
+==========================================
+interface range fa0/2 - 6
  switchport mode access
  switchport access vlan 1
 exit
-------------------------------
+
+==========================================
+5. PORTS POUR TELEPHONES (voix + donnees)
+==========================================
+Les ports Fa0/10 et Fa0/11 transportent 2 VLAN :
+  - VLAN 10 pour la voix (telephone)
+  - VLAN 1  pour les donnees (PC branche derriere)
+
 interface range fa0/10 - 11
  switchport mode access
  switchport access vlan 1
  switchport voice vlan 10
  mls qos trust cos
 exit
+
+==========================================
+6. SAUVEGARDE
+==========================================
+end
+copy running-config startup-config
+(appuyer sur Entree pour confirmer)
+
+==========================================
+VERIFICATIONS
+==========================================
+show vlan brief
+show interfaces trunk
+show running-config

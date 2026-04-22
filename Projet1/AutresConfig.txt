@@ -1,0 +1,162 @@
+IP : 192.168.1.50
+Masque : 255.255.255.0
+Passerelle : 192.168.1.1
+--------------------------
+ping 192.168.1.11
+ping 192.168.1.50
+ping 192.168.1.1
+ping 192.168.10.1
+===================================
+SW1
+===================================
+enable
+configure terminal
+interface fa0/6
+ switchport mode access
+ switchport access vlan 1
+exit
+end
+copy running-config startup-config
+
+===================================
+SERVER
+===================================
+IP Address : 192.168.1.53
+Subnet Mask : 255.255.255.0
+Default Gateway : 192.168.1.1
+DNS Server : 127.0.0.1
+-----------------------------------
+192.168.1.10     000C.CF0B.EA64           --                     Automatic
+192.168.1.11     000D.BDB1.6C61           --                     Automatic
+192.168.1.12     0090.0C1A.8556           --                     Automatic
+192.168.1.13     0001.9658.3C2A           --                     Automatic
+192.168.10.11    0001.C748.A9C3           --                     Automatic
+192.168.10.10    00E0.B0DC.56E1           --                     Automatic
+
+------------------------------------
+pc1.maison.local			192.168.1.10 (ou l'IP réelle de PC1)
+pc2.maison.local			192.168.1.11 (ou l'IP réelle de PC2)
+pc3.maison.local			192.168.1.12 (ou l'IP réelle de PC3)
+pc4.maison.local			192.168.1.13 (ou l'IP réelle de PC4)
+imprimante.maison.local		192.168.1.50
+routeur.maison.local		192.168.1.1
+serveur.maison.local		192.168.1.53
+www.maison.local			192.168.1.53
+=======
+TEST
+=======
+ping pc2.maison.local
+ping imprimante.maison.local
+nslookup serveur.maison.local
+-------------------------------------
+<html>
+ <body>
+  <h1>Bienvenue sur le reseau maison</h1>
+  <p>Serveur local operationnel.</p>
+  <ul>
+   <li><a href="http://routeur.maison.local">Routeur</a></li>
+   <li><a href="http://imprimante.maison.local">Imprimante</a></li>
+   <li><a href="http://serveur.maison.local">Serveur</a></li>
+  </ul>
+ </body>
+</html>
+---------------------------------------
+http://www.maison.local
+http://serveur.maison.local
+http://192.168.1.53
+
+==========================
+R1
+==========================
+enable
+configure terminal
+
+ephone-dn 3
+ number 9000
+ name Voicemail
+ mwi on
+exit
+end
+=========================
+ACL
+=========================
+!Routeur1
+enable
+configure terminal
+access-list 110 deny ip host 192.168.1.12 any
+access-list 110 permit ip any any
+interface fa0/0.1
+ ip access-group 110 in
+exit
+end
+--------------------------
+copy running-config startup-config
+
+
+===============================================
+----------------DOCUMENTATION------------------
+===============================================
+Router0		R1
+Switch0		SW1
+Server1 	SRV1
+Printer0	IMP1
+PC1			PC1-Salon
+PC2			PC2-Bureau
+PC3			PC3-Chambre
+PC4			PC4-Cuisine
+IP Phone0	TEL-1001
+IP Phone1	TEL-1002
+------------------------------------------------
+Code couleurs
+VLAN Données : (ex : RGB 213, 232, 240)
+Vlan Voix : (ex : RGB 252, 228, 214)
+------------------------------------------------
+HEADER
+PROJET 1 — RESEAU DOMESTIQUE AVEC TELEPHONIE IP
+Cisco Packet Tracer  —  Avril 2026
+Yannick
+------------------------------------------------
+=========================================
+VLAN 1 — DONNEES						|
+=========================================
+Sous-reseau : 192.168.1.0/24			|
+Passerelle  : 192.168.1.1				|
+DHCP        : R1 (pool DATA, .10 a .49) |
+DNS         : 192.168.1.53				|
+=========================================
+=========================================
+VLAN 10 — VOIX
+=========================================
+Sous-reseau : 192.168.10.0/24
+Passerelle  : 192.168.10.1
+DHCP        : R1 (pool VOICE, .10 a +)
+TFTP        : 192.168.10.1 (option 150)
+=========================================
+-------------------------------------------
+R1 — Cisco 2811
+Routeur + DHCP + CME
+Router-on-a-stick  (fa0/0.1 + fa0/0.10)
+ACL 110 (bloque 192.168.1.12)
+------------------------------------------
+SW1 — Cisco 2960-24TT
+Fa0/1   : Trunk vers R1
+Fa0/2-6 : VLAN 1 (PC, imprimante, serveur)
+Fa0/10-11: VLAN 10 voix + VLAN 1 donnees
+
+-------------------------------------------
+SRV1 — Services locaux
+IP         : 192.168.1.53 /24
+Passerelle : 192.168.1.1
+DNS self   : 127.0.0.1
+Services   : DNS + HTTP
+-------------------------------------------
+IMP1 — Imprimante
+IP         : 192.168.1.50 /24
+Masque     : 255.255.255.0
+Passerelle : 192.168.1.1
+Mode       : Statique
+-------------------------------------------
+TEL-1001  (Salon)
+TEL-1002  (Bureau)
+DHCP auto en VLAN 10
+Protocole : SCCP (Skinny) port 2000

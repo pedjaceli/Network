@@ -1,6 +1,79 @@
-===============
-SERVER
-===============
-pc1.maison.local        → 192.168.1.10
-imprimante.maison.local → 192.168.1.50
-routeur.maison.local    → 192.168.1.1
+==========================================
+SERVER (Server-PT)   IP : 192.168.1.53
+==========================================
+
+------------------------------------------
+1. AJOUT ET CABLAGE
+------------------------------------------
+- Glisser un "Server-PT" depuis End Devices
+- Cable cuivre droit : Server FastEthernet0 -> Switch SW1 Fa0/6
+
+------------------------------------------
+2. CONFIGURATION IP
+------------------------------------------
+Onglet Desktop > IP Configuration > Static :
+
+IP Address      : 192.168.1.53
+Subnet Mask     : 255.255.255.0
+Default Gateway : 192.168.1.1
+DNS Server      : 127.0.0.1
+
+------------------------------------------
+3. SERVICE DNS  (Services > DNS)
+------------------------------------------
+DNS Service : On
+
+Entrees A Record a ajouter (Name + Address + Add) :
+
+pc1.maison.local          192.168.1.10
+pc2.maison.local          192.168.1.11
+pc3.maison.local          192.168.1.12
+pc4.maison.local          192.168.1.13
+imprimante.maison.local   192.168.1.50
+serveur.maison.local      192.168.1.53
+routeur.maison.local      192.168.1.1
+www.maison.local          192.168.1.53
+
+NOTE : les IP des PC viennent du DHCP.
+       Verifier avec "show ip dhcp binding" sur R1
+       puis ajuster les entrees DNS si besoin.
+
+------------------------------------------
+4. SERVICE HTTP  (Services > HTTP)
+------------------------------------------
+HTTP  : On
+HTTPS : On
+
+Editer "index.html" (bouton edit) et remplacer
+le contenu par :
+
+<html>
+ <body>
+  <h1>Bienvenue sur le reseau maison</h1>
+  <p>Serveur local operationnel.</p>
+  <ul>
+   <li><a href="http://routeur.maison.local">Routeur</a></li>
+   <li><a href="http://imprimante.maison.local">Imprimante</a></li>
+  </ul>
+ </body>
+</html>
+
+Puis : Save.
+
+------------------------------------------
+5. TESTS
+------------------------------------------
+Depuis PC1 > Desktop > Command Prompt :
+
+  ping pc2.maison.local              -> doit repondre
+  ping imprimante.maison.local       -> doit repondre
+  nslookup www.maison.local          -> renvoie 192.168.1.53
+
+Depuis PC1 > Desktop > Web Browser :
+
+  http://www.maison.local            -> affiche la page HTML
+
+------------------------------------------
+6. SAUVEGARDE
+------------------------------------------
+File > Save (Ctrl+S) dans Packet Tracer
