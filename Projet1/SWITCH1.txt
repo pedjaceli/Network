@@ -1,5 +1,5 @@
 ==========================================
-SWITCH1 (Cisco 2960-24TT)
+SWITCH1 (Cisco 2960-24TT)  -  PME
 ==========================================
 Colle les blocs dans l'ordre, dans l'onglet CLI de SW1.
 
@@ -22,14 +22,39 @@ exit
 3. PORT TRUNK VERS R1
 ==========================================
 interface fa0/1
- description Lien vers R1
+ description Trunk vers R1 - tous VLAN
  switchport mode trunk
 exit
 
 ==========================================
 4. PORTS D'ACCES (PC, imprimante, serveur)
 ==========================================
-interface range fa0/2 - 6
+interface fa0/2
+ description PC1-Accueil - VLAN 1
+ switchport mode access
+ switchport access vlan 1
+exit
+
+interface fa0/3
+ description PC2-Compta - VLAN 1
+ switchport mode access
+ switchport access vlan 1
+exit
+
+interface fa0/4
+ description PC3-Commercial - VLAN 1 - IP FIXE 192.168.1.12
+ switchport mode access
+ switchport access vlan 1
+exit
+
+interface fa0/5
+ description IMP1 Imprimante - VLAN 1 - IP 192.168.1.50
+ switchport mode access
+ switchport access vlan 1
+exit
+
+interface fa0/6
+ description SRV1 Serveur DNS HTTP - VLAN 1 - IP 192.168.1.53
  switchport mode access
  switchport access vlan 1
 exit
@@ -41,7 +66,16 @@ Les ports Fa0/10 et Fa0/11 transportent 2 VLAN :
   - VLAN 10 pour la voix (telephone)
   - VLAN 1  pour les donnees (PC branche derriere)
 
-interface range fa0/10 - 11
+interface fa0/10
+ description TEL-1001 Accueil (+ PC4-Direction derriere) - voix 10 + data 1
+ switchport mode access
+ switchport access vlan 1
+ switchport voice vlan 10
+ mls qos trust cos
+exit
+
+interface fa0/11
+ description TEL-1002 Direction - voix 10 + data 1
  switchport mode access
  switchport access vlan 1
  switchport voice vlan 10
@@ -60,4 +94,5 @@ VERIFICATIONS
 ==========================================
 show vlan brief
 show interfaces trunk
+show interfaces description
 show running-config

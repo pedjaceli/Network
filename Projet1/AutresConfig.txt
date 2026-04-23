@@ -1,13 +1,19 @@
+===================================
+IMPRIMANTE (IMP1)
+===================================
 IP : 192.168.1.50
 Masque : 255.255.255.0
 Passerelle : 192.168.1.1
+--------------------------
+TESTS PING DE BASE
 --------------------------
 ping 192.168.1.11
 ping 192.168.1.50
 ping 192.168.1.1
 ping 192.168.10.1
+
 ===================================
-SW1
+SW1 - Ajout du port serveur
 ===================================
 enable
 configure terminal
@@ -19,12 +25,14 @@ end
 copy running-config startup-config
 
 ===================================
-SERVER
+SERVER (SRV1)
 ===================================
 IP Address : 192.168.1.53
 Subnet Mask : 255.255.255.0
 Default Gateway : 192.168.1.1
 DNS Server : 127.0.0.1
+-----------------------------------
+Releve DHCP (show ip dhcp binding) :
 -----------------------------------
 192.168.1.10     000C.CF0B.EA64           --                     Automatic
 192.168.1.11     000D.BDB1.6C61           --                     Automatic
@@ -34,39 +42,48 @@ DNS Server : 127.0.0.1
 192.168.10.10    00E0.B0DC.56E1           --                     Automatic
 
 ------------------------------------
-pc1.maison.local			192.168.1.10 (ou l'IP réelle de PC1)
-pc2.maison.local			192.168.1.11 (ou l'IP réelle de PC2)
-pc3.maison.local			192.168.1.12 (ou l'IP réelle de PC3)
-pc4.maison.local			192.168.1.13 (ou l'IP réelle de PC4)
-imprimante.maison.local		192.168.1.50
-routeur.maison.local		192.168.1.1
-serveur.maison.local		192.168.1.53
-www.maison.local			192.168.1.53
+ENREGISTREMENTS DNS (sur le serveur)
+------------------------------------
+pc1.pme.local             192.168.1.10
+pc2.pme.local             192.168.1.11
+pc3.pme.local             192.168.1.12
+pc4.pme.local             192.168.1.13
+imprimante.pme.local      192.168.1.50
+routeur.pme.local         192.168.1.1
+serveur.pme.local         192.168.1.53
+www.pme.local             192.168.1.53
+
 =======
-TEST
+TESTS DNS
 =======
-ping pc2.maison.local
-ping imprimante.maison.local
-nslookup serveur.maison.local
+ping pc2.pme.local
+ping imprimante.pme.local
+nslookup serveur.pme.local
+
+-------------------------------------
+CONTENU HTML DU SERVEUR (index.html)
 -------------------------------------
 <html>
  <body>
-  <h1>Bienvenue sur le reseau maison</h1>
+  <h1>Bienvenue sur le reseau de l entreprise</h1>
   <p>Serveur local operationnel.</p>
   <ul>
-   <li><a href="http://routeur.maison.local">Routeur</a></li>
-   <li><a href="http://imprimante.maison.local">Imprimante</a></li>
-   <li><a href="http://serveur.maison.local">Serveur</a></li>
+   <li><a href="http://routeur.pme.local">Routeur</a></li>
+   <li><a href="http://imprimante.pme.local">Imprimante</a></li>
+   <li><a href="http://serveur.pme.local">Serveur</a></li>
   </ul>
  </body>
 </html>
+
 ---------------------------------------
-http://www.maison.local
-http://serveur.maison.local
+URL de test (navigateur web PC1)
+---------------------------------------
+http://www.pme.local
+http://serveur.pme.local
 http://192.168.1.53
 
 ==========================
-R1
+R1 - Voicemail (Bonus 3)
 ==========================
 enable
 configure terminal
@@ -77,8 +94,9 @@ ephone-dn 3
  mwi on
 exit
 end
+
 =========================
-ACL
+ACL Bonus 4 (bloquer PC3-Commercial)
 =========================
 !Routeur1
 enable
@@ -96,67 +114,79 @@ copy running-config startup-config
 ===============================================
 ----------------DOCUMENTATION------------------
 ===============================================
-Router0		R1
-Switch0		SW1
-Server1 	SRV1
-Printer0	IMP1
-PC1			PC1-Salon
-PC2			PC2-Bureau
-PC3			PC3-Chambre
-PC4			PC4-Cuisine
-IP Phone0	TEL-1001
-IP Phone1	TEL-1002
+RENOMMAGE DES EQUIPEMENTS :
+Router0     R1
+Switch0     SW1
+Server1     SRV1
+Printer0    IMP1
+PC1         PC1-Accueil
+PC2         PC2-Compta
+PC3         PC3-Commercial
+PC4         PC4-Direction
+IP Phone0   TEL-1001
+IP Phone1   TEL-1002
 ------------------------------------------------
-Code couleurs
-VLAN Données : (ex : RGB 213, 232, 240)
-Vlan Voix : (ex : RGB 252, 228, 214)
+CODE COULEURS (rectangles VLAN) :
+VLAN Donnees : RGB 213, 232, 240 (bleu clair)
+VLAN Voix    : RGB 252, 228, 214 (orange clair)
 ------------------------------------------------
-HEADER
-PROJET 1 — RESEAU DOMESTIQUE AVEC TELEPHONIE IP
-Cisco Packet Tracer  —  Avril 2026
+HEADER DU SCHEMA :
+PROJET 1 - RESEAU POUR PETITE ENTREPRISE AVEC TELEPHONIE IP
+Cisco Packet Tracer  -  Avril 2026
 Yannick
 ------------------------------------------------
+
 =========================================
-VLAN 1 — DONNEES						|
+VLAN 1 - DONNEES
 =========================================
-Sous-reseau : 192.168.1.0/24			|
-Passerelle  : 192.168.1.1				|
-DHCP        : R1 (pool DATA, .10 a .49) |
-DNS         : 192.168.1.53				|
+Sous-reseau : 192.168.1.0/24
+Passerelle  : 192.168.1.1
+DHCP        : R1 (pool DATA, .10 a .49)
+DNS         : 192.168.1.53
 =========================================
+
 =========================================
-VLAN 10 — VOIX
+VLAN 10 - VOIX
 =========================================
 Sous-reseau : 192.168.10.0/24
 Passerelle  : 192.168.10.1
 DHCP        : R1 (pool VOICE, .10 a +)
 TFTP        : 192.168.10.1 (option 150)
 =========================================
+
 -------------------------------------------
-R1 — Cisco 2811
+R1 - Cisco 2811
 Routeur + DHCP + CME
 Router-on-a-stick  (fa0/0.1 + fa0/0.10)
 ACL 110 (bloque 192.168.1.12)
-------------------------------------------
-SW1 — Cisco 2960-24TT
+-------------------------------------------
+
+-------------------------------------------
+SW1 - Cisco 2960-24TT
 Fa0/1   : Trunk vers R1
 Fa0/2-6 : VLAN 1 (PC, imprimante, serveur)
 Fa0/10-11: VLAN 10 voix + VLAN 1 donnees
+-------------------------------------------
 
 -------------------------------------------
-SRV1 — Services locaux
+SRV1 - Services locaux
 IP         : 192.168.1.53 /24
 Passerelle : 192.168.1.1
 DNS self   : 127.0.0.1
 Services   : DNS + HTTP
 -------------------------------------------
-IMP1 — Imprimante
+
+-------------------------------------------
+IMP1 - Imprimante
 IP         : 192.168.1.50 /24
 Masque     : 255.255.255.0
 Passerelle : 192.168.1.1
 Mode       : Statique
 -------------------------------------------
-TEL-1001  (Salon)
-TEL-1002  (Bureau)
+
+-------------------------------------------
+TEL-1001  (Accueil)
+TEL-1002  (Direction)
 DHCP auto en VLAN 10
 Protocole : SCCP (Skinny) port 2000
+-------------------------------------------

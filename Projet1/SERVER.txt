@@ -1,5 +1,6 @@
 ==========================================
 SERVER (Server-PT)   IP : 192.168.1.53
+Projet : PME
 ==========================================
 
 ------------------------------------------
@@ -25,14 +26,14 @@ DNS Service : On
 
 Entrees A Record a ajouter (Name + Address + Add) :
 
-pc1.maison.local          192.168.1.10
-pc2.maison.local          192.168.1.11
-pc3.maison.local          192.168.1.12
-pc4.maison.local          192.168.1.13
-imprimante.maison.local   192.168.1.50
-serveur.maison.local      192.168.1.53
-routeur.maison.local      192.168.1.1
-www.maison.local          192.168.1.53
+pc1.pme.local             192.168.1.10
+pc2.pme.local             192.168.1.11
+pc3.pme.local             192.168.1.12
+pc4.pme.local             192.168.1.13
+imprimante.pme.local      192.168.1.50
+serveur.pme.local         192.168.1.53
+routeur.pme.local         192.168.1.1
+www.pme.local             192.168.1.53
 
 NOTE : les IP des PC viennent du DHCP.
        Verifier avec "show ip dhcp binding" sur R1
@@ -49,11 +50,12 @@ le contenu par :
 
 <html>
  <body>
-  <h1>Bienvenue sur le reseau maison</h1>
+  <h1>Bienvenue sur le reseau de l entreprise</h1>
   <p>Serveur local operationnel.</p>
   <ul>
-   <li><a href="http://routeur.maison.local">Routeur</a></li>
-   <li><a href="http://imprimante.maison.local">Imprimante</a></li>
+   <li><a href="http://routeur.pme.local">Routeur</a></li>
+   <li><a href="http://imprimante.pme.local">Imprimante</a></li>
+   <li><a href="http://serveur.pme.local">Serveur</a></li>
   </ul>
  </body>
 </html>
@@ -65,13 +67,13 @@ Puis : Save.
 ------------------------------------------
 Depuis PC1 > Desktop > Command Prompt :
 
-  ping pc2.maison.local              -> doit repondre
-  ping imprimante.maison.local       -> doit repondre
-  nslookup www.maison.local          -> renvoie 192.168.1.53
+  ping pc2.pme.local              -> doit repondre
+  ping imprimante.pme.local       -> doit repondre
+  nslookup www.pme.local          -> renvoie 192.168.1.53
 
 Depuis PC1 > Desktop > Web Browser :
 
-  http://www.maison.local            -> affiche la page HTML
+  http://www.pme.local            -> affiche la page HTML
 
 ------------------------------------------
 6. SAUVEGARDE

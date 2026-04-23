@@ -1,5 +1,5 @@
 ==========================================
-ROUTER1 (Cisco 2811)
+ROUTER1 (Cisco 2811)  -  PME
 ==========================================
 Colle les blocs dans l'ordre, dans l'onglet CLI de R1.
 Ne pas tout coller d'un coup, section par section.
@@ -21,13 +21,13 @@ interface fa0/0
 exit
 
 interface fa0/0.1
- description LAN Donnees
+ description LAN Donnees - VLAN 1 - 192.168.1.0/24
  encapsulation dot1Q 1 native
  ip address 192.168.1.1 255.255.255.0
 exit
 
 interface fa0/0.10
- description LAN Voix
+ description LAN Voix - VLAN 10 - 192.168.10.0/24
  encapsulation dot1Q 10
  ip address 192.168.10.1 255.255.255.0
 exit
@@ -71,12 +71,12 @@ exit
 ==========================================
 ephone-dn 1
  number 1001
- description Salon
+ description Accueil
 exit
 
 ephone-dn 2
  number 1002
- description Bureau
+ description Direction
 exit
 
 ==========================================
@@ -116,9 +116,9 @@ ephone-dn 3
 exit
 
 ------------------------------------------
-BONUS 4 : ACL etendue (bloquer PC3)
+BONUS 4 : ACL etendue (bloquer PC3-Commercial)
 ------------------------------------------
-PREREQUIS : PC3 doit avoir une IP FIXE.
+PREREQUIS : PC3-Commercial doit avoir une IP FIXE.
   - Soit en statique sur le PC (Desktop > IP Config > Static)
   - Soit en reservation DHCP.
   - Note l'IP choisie, puis remplace 192.168.1.12 ci-dessous si besoin.
